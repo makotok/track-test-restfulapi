@@ -8,37 +8,44 @@ import javax.persistence.Table
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.GenerationType
+import javax.validation.constraints.NotNull
 
 /**
  * レシピエンティティです。
  */
 @Table(name = "recipes")
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class Recipe(
 
-    @JsonProperty
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0,
+    @field:JsonProperty
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
 
-    @JsonProperty
-    var title: String = "",
+    @field:NotNull
+    @field:JsonProperty
+    var title: String? = null,
 
-    @JsonProperty("making_time")
-    var makingTime: String = "",
+    @field:NotNull
+    @field:JsonProperty("making_time")
+    var makingTime: String? = null,
 
-    @JsonProperty
-    var serves: String = "",
+    @field:NotNull
+    @field:JsonProperty
+    var serves: String? = null,
 
-    @JsonProperty
-    var ingredients: String = "",
+    @field:NotNull
+    @field:JsonProperty
+    var ingredients: String? = null,
 
-    @JsonProperty
-    var cost: Long = 0,
+    @field:NotNull
+    @field:JsonProperty
+    var cost: Long? = null,
 
-    @JsonIgnore
+    @field:JsonIgnore
     var createdAt: Date = Date(),
 
-    @JsonIgnore
+    @field:JsonIgnore
     var updatedAt: Date = Date()
 )
