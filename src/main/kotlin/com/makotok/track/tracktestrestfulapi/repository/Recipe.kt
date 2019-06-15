@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import javax.persistence.GenerationType
 import javax.validation.constraints.NotNull
+import com.fasterxml.jackson.annotation.JsonInclude
 
 /**
  * レシピエンティティです。
