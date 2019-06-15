@@ -99,6 +99,7 @@ open class RecipeController(
      * RecipeリソースのDELETEエンドポイントです。
      */
     @DeleteMapping("{id}")
+    @Transactional(rollbackFor = arrayOf(Throwable::class))
     open fun deleteRecipe(@PathVariable id: Long): ResponseEntity<RecipeResponse> {
         // エンティティの取得および存在チェック
         val entity = recipeRepository.findById(id).orElse(Recipe())
