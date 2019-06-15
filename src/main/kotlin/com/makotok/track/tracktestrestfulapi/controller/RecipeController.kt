@@ -34,27 +34,45 @@ open class RecipeController(
     val recipeRepository: RecipeRepository
 ) {
 
+    /**
+     * RecipesリソースのGetエンドポイントです。
+     */
     @GetMapping
-    open fun getRecipes(): List<Recipe> {
-        return recipeRepository.findAll(Sort(Direction.ASC, "id"))
+    open fun getRecipes(): RecipeResponse {
+        val recipes = recipeRepository.findAll(Sort(Direction.ASC, "id"))
+        return RecipeResponse(null, null, recipes)
     }
 
+    /**
+     * RecipeリソースのGetエンドポイントです。
+     */
     @GetMapping("{id}")
-    open fun getRecipe(@PathVariable id: Long): Recipe {
-        return recipeRepository.findById(id).orElse(Recipe())
+    open fun getRecipe(@PathVariable id: Long): RecipeResponse {
+        val recipe = recipeRepository.findById(id).orElse(Recipe())
+        return RecipeResponse(null, null, listOf(recipe))
     }
 
+    /**
+     * RecipeリソースのPOSTエンドポイントです。
+     */
     @PostMapping
     @Transactional(rollbackFor = arrayOf(Throwable::class))
     open fun postRecipe(@RequestBody @Valid recipe: Recipe, bindingResult: BindingResult): ResponseEntity<RecipeResponse> {
+        // バリデーションチェックを実施
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest()
                 .body(RecipeResponse("Recipe creation failed!", "title, making_time, serves, ingredients, cost"))
         }
+        // エンティティを保存
         val savedEntity = recipeRepository.save(recipe);
+
+        // レスポンスを返す
         return ResponseEntity.ok(RecipeResponse("Recipe successfully created!", null, listOf(savedEntity)))
     }
 
+    /**
+     * RecipeリソースのPATCHエンドポイントです。
+     */
     @PatchMapping("{id}")
     @Transactional(rollbackFor = arrayOf(Throwable::class))
     open fun patchRecipe(@PathVariable id: Long, @RequestBody recipe: Recipe): ResponseEntity<RecipeResponse> {
@@ -62,6 +80,8 @@ open class RecipeController(
         if (entity.id == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RecipeResponse("No Recipe found"));
         }
+
+        // エンティティを更新・保存
         entity.title = recipe.title ?: entity.title
         entity.makingTime = recipe.makingTime ?: entity.makingTime
         entity.serves = recipe.serves ?: entity.serves
@@ -70,16 +90,24 @@ open class RecipeController(
         entity.updatedAt = Date()
         recipeRepository.save(entity)
 
+        // レスポンスを返す
         return ResponseEntity.ok(RecipeResponse("Recipe successfully updated!", null, listOf(entity)))
     }
 
+    /**
+     * RecipeリソースのDELETEエンドポイントです。
+     */
     @DeleteMapping("{id}")
     open fun deleteRecipe(@PathVariable id: Long): ResponseEntity<RecipeResponse> {
+        // エンティティの取得および存在チェック
         val entity = recipeRepository.findById(id).orElse(Recipe())
         if (entity.id == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(RecipeResponse("No Recipe found"));
         }
+        // エンティティの削除
         recipeRepository.deleteById(id)
+
+        // レスポンスを返す
         return ResponseEntity.ok(RecipeResponse("Recipe successfully removed!"))
     }
 }
