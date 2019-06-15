@@ -49,7 +49,7 @@ open class RecipeController(
     @GetMapping("{id}")
     open fun getRecipe(@PathVariable id: Long): RecipeResponse {
         val recipe = recipeRepository.findById(id).orElse(Recipe())
-        return RecipeResponse(null, null, listOf(recipe))
+        return RecipeResponse("Recipe details by id", null, listOf(recipe))
     }
 
     /**
