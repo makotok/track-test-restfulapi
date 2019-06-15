@@ -12,7 +12,7 @@ data class RecipeResponse (
     @JsonProperty("requried")
     var requried : String? = null,
 
-    @JsonProperty("recipe")
+    @JsonProperty("recipes")
     var recipes : List<Recipe>? = null
 
 )
